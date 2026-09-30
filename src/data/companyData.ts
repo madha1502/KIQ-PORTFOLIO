@@ -47,6 +47,7 @@ export const servicesData: Service[] = [
   {
     id: 'full-stack-dev',
     title: 'Full Stack Development',
+    category: 'Full Stack Engineering',
     subtitle: 'High-performance web applications & microservices',
     description:
       'We architect, build, and deploy production-grade software using React, Next.js, Node.js, and cloud-native databases. From responsive frontends with Apple-level fluid motion to fault-tolerant backend APIs.',
@@ -63,6 +64,7 @@ export const servicesData: Service[] = [
   {
     id: 'digital-marketing',
     title: 'Digital Marketing',
+    category: 'Digital Marketing & Growth',
     subtitle: 'Data-driven growth funnels and brand dominance',
     description:
       'Turn digital traffic into recurring revenue. Our omnichannel marketing solutions combine search engine dominance, high-conversion ad creative, email automation, and hyper-targeted social engagement.',
@@ -79,6 +81,7 @@ export const servicesData: Service[] = [
   {
     id: 'data-analytics',
     title: 'Data Analytics',
+    category: 'Data Analytics & Telemetry',
     subtitle: 'Transform raw metrics into actionable revenue levers',
     description:
       'Empower your leadership with real-time business intelligence. We construct unified data warehouses, predictive telemetry pipelines, and interactive executive dashboards tailored to your exact business KPIs.',
@@ -95,6 +98,7 @@ export const servicesData: Service[] = [
   {
     id: 'cloud-services',
     title: 'Cloud Services',
+    category: 'Cloud Infrastructure & DevOps',
     subtitle: 'Resilient, scalable cloud infrastructure and DevOps',
     description:
       'Migrate, modernize, and automate your infrastructure on AWS, Google Cloud, and Azure. We optimize compute costs, secure edge networks, and ensure 24/7 reliability for mission-critical operations.',
@@ -111,10 +115,11 @@ export const servicesData: Service[] = [
   {
     id: 'small-business-solutions',
     title: 'Small Business Solutions',
+    category: 'Small Business Suite',
     subtitle: 'Turnkey digital transformations engineered for growth',
     description:
       'Affordable, high-impact digital toolkits crafted specifically for emerging companies, retail storefronts, and local service providers looking to scale rapidly without huge enterprise overhead.',
-    iconName: 'Briefcase',
+    iconName: 'Store',
     features: [
       'Rapid turnaround digital storefronts and booking systems',
       'Google My Business & local hyper-targeted visibility',
@@ -127,6 +132,7 @@ export const servicesData: Service[] = [
   {
     id: 'free-consultation',
     title: 'Free Consultation',
+    category: 'Strategic Architecture Consultation',
     subtitle: 'Strategic architecture & digital roadmap session',
     description:
       'Book a complimentary 45-minute technical audit with founder Kavin Sengottuvel and our lead architects. We evaluate your current systems, uncover performance bottlenecks, and map a clear execution plan.',

@@ -7,18 +7,34 @@ import {
   TrendingUp,
   BarChart3,
   Cloud,
-  Briefcase,
+  Store,
   Compass,
   CheckCircle2,
   ArrowUpRight,
   Star,
   MapPin,
   Award,
+  Server,
+  Terminal,
+  Globe,
+  Target,
+  LineChart,
+  Activity,
+  ShieldCheck,
+  CreditCard,
+  Users,
+  CalendarCheck,
+  Zap,
+  Sparkles,
+  Layers,
+  Briefcase,
+  Megaphone,
+  MessagesSquare,
 } from 'lucide-react';
 import { companyInfo, keyStats, servicesData, projectsData, testimonialsData } from '../data/companyData';
 import { InteractiveIphoneFrame } from '../components/InteractiveIphoneFrame';
 import { SectionHeading } from '../components/SectionHeading';
-import { Project } from '../types';
+import { Project, Service } from '../types';
 import { useThemePalette } from '../context/ThemePaletteContext';
 
 interface HomePageProps {
@@ -26,20 +42,136 @@ interface HomePageProps {
   onSelectProject: (project: Project) => void;
 }
 
+// Dynamic Lucide icon and category styling resolver
+const getServiceCategoryMeta = (svc: Service) => {
+  const query = `${svc.category || ''} ${svc.title} ${svc.iconName} ${svc.id}`.toLowerCase();
+
+  // Cloud Category -> Cloud icon (e.g. AWS, Kubernetes, DevOps, Serverless)
+  if (query.includes('cloud') || query.includes('devops') || query.includes('server')) {
+    return {
+      Icon: Cloud,
+      SubIcon: Server,
+      categoryLabel: 'Cloud & DevOps',
+      iconContainerStyle: 'bg-sky-50 text-sky-600 border-sky-200/90 group-hover:bg-sky-500 group-hover:text-white',
+      badgeStyle: 'bg-sky-50 text-sky-700 border-sky-200/80',
+      iconGlow: 'rgba(14, 165, 233, 0.25)',
+    };
+  }
+
+  // Analytics Category -> BarChart3 icon (e.g. Data Analytics, BI, Dashboards)
+  if (query.includes('analytic') || query.includes('data') || query.includes('telemetry') || query.includes('barchart')) {
+    return {
+      Icon: BarChart3,
+      SubIcon: LineChart,
+      categoryLabel: 'Analytics & Telemetry',
+      iconContainerStyle: 'bg-indigo-50 text-indigo-600 border-indigo-200/90 group-hover:bg-indigo-600 group-hover:text-white',
+      badgeStyle: 'bg-indigo-50 text-indigo-700 border-indigo-200/80',
+      iconGlow: 'rgba(99, 102, 241, 0.25)',
+    };
+  }
+
+  // Marketing Category -> TrendingUp icon (e.g. Digital Marketing, Growth, SEO)
+  if (query.includes('market') || query.includes('growth') || query.includes('seo') || query.includes('ad')) {
+    return {
+      Icon: TrendingUp,
+      SubIcon: Megaphone,
+      categoryLabel: 'Digital Marketing & Growth',
+      iconContainerStyle: 'bg-blue-50 text-blue-600 border-blue-200/90 group-hover:bg-blue-600 group-hover:text-white',
+      badgeStyle: 'bg-blue-50 text-blue-700 border-blue-200/80',
+      iconGlow: 'rgba(37, 99, 235, 0.25)',
+    };
+  }
+
+  // Full Stack Engineering -> Code2 icon (e.g. Web Apps, Microservices, APIs)
+  if (query.includes('code') || query.includes('stack') || query.includes('dev') || query.includes('web')) {
+    return {
+      Icon: Code2,
+      SubIcon: Layers,
+      categoryLabel: 'Full Stack Engineering',
+      iconContainerStyle: 'bg-cyan-50 text-cyan-700 border-cyan-200/90 group-hover:bg-cyan-600 group-hover:text-white',
+      badgeStyle: 'bg-cyan-50 text-cyan-800 border-cyan-200/80',
+      iconGlow: 'rgba(6, 182, 212, 0.25)',
+    };
+  }
+
+  // Small Business Solutions -> Store / Briefcase icon
+  if (query.includes('business') || query.includes('store') || query.includes('retail') || query.includes('briefcase')) {
+    return {
+      Icon: Store,
+      SubIcon: Briefcase,
+      categoryLabel: 'Small Business Suite',
+      iconContainerStyle: 'bg-emerald-50 text-emerald-600 border-emerald-200/90 group-hover:bg-emerald-600 group-hover:text-white',
+      badgeStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
+      iconGlow: 'rgba(16, 185, 129, 0.25)',
+    };
+  }
+
+  // Consultation -> Compass / MessagesSquare icon
+  if (query.includes('consult') || query.includes('strategy') || query.includes('compass') || query.includes('road')) {
+    return {
+      Icon: Compass,
+      SubIcon: MessagesSquare,
+      categoryLabel: 'Strategic Consultation',
+      iconContainerStyle: 'bg-amber-50 text-amber-600 border-amber-200/90 group-hover:bg-amber-500 group-hover:text-white',
+      badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200/80',
+      iconGlow: 'rgba(245, 158, 11, 0.25)',
+    };
+  }
+
+  return {
+    Icon: Sparkles,
+    SubIcon: Layers,
+    categoryLabel: svc.category || 'Digital Service',
+    iconContainerStyle: 'bg-slate-100 text-slate-700 border-slate-200 group-hover:bg-slate-800 group-hover:text-white',
+    badgeStyle: 'bg-slate-100 text-slate-700 border-slate-200',
+    iconGlow: 'rgba(100, 116, 139, 0.25)',
+  };
+};
+
+// Dynamic contextual Lucide icon for feature checklist bullets
+const getFeatureIcon = (feature: string) => {
+  const text = feature.toLowerCase();
+  if (text.includes('api') || text.includes('graphql') || text.includes('backend')) {
+    return <Terminal className="w-3.5 h-3.5 text-sky-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('seo') || text.includes('search') || text.includes('google')) {
+    return <Globe className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('ad') || text.includes('roi') || text.includes('campaign')) {
+    return <Target className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('dashboard') || text.includes('telemetry') || text.includes('visualizer')) {
+    return <LineChart className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('churn') || text.includes('model') || text.includes('forecast')) {
+    return <Activity className="w-3.5 h-3.5 text-violet-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('cloud') || text.includes('terraform') || text.includes('docker') || text.includes('kubernetes') || text.includes('serverless')) {
+    return <Server className="w-3.5 h-3.5 text-sky-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('downtime') || text.includes('uptime') || text.includes('recovery') || text.includes('backup') || text.includes('audit')) {
+    return <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('payment') || text.includes('billing') || text.includes('gateway') || text.includes('upi')) {
+    return <CreditCard className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('crm') || text.includes('customer') || text.includes('inquiry') || text.includes('staff')) {
+    return <Users className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('timeline') || text.includes('milestone') || text.includes('proposal') || text.includes('roadmap')) {
+    return <CalendarCheck className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />;
+  }
+  if (text.includes('mobile') || text.includes('responsive') || text.includes('animation') || text.includes('60fps')) {
+    return <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />;
+  }
+  return <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0 mt-0.5" />;
+};
+
 export const HomePage: React.FC<HomePageProps> = ({
   onOpenConsultation,
   onSelectProject,
 }) => {
   const { currentPalette } = useThemePalette();
-
-  const serviceIcons: Record<string, React.ReactNode> = {
-    Code2: <Code2 className={`w-5 h-5 ${currentPalette.textAccentClass}`} />,
-    TrendingUp: <TrendingUp className={`w-5 h-5 ${currentPalette.textAccentClass}`} />,
-    BarChart3: <BarChart3 className={`w-5 h-5 ${currentPalette.textAccentClass}`} />,
-    Cloud: <Cloud className={`w-5 h-5 ${currentPalette.textAccentClass}`} />,
-    Briefcase: <Briefcase className={`w-5 h-5 ${currentPalette.textAccentClass}`} />,
-    Compass: <Compass className={`w-5 h-5 ${currentPalette.textAccentClass}`} />,
-  };
 
   return (
     <div className="min-h-screen pt-24 pb-20 overflow-hidden w-full">
@@ -182,75 +314,92 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* Cards Showcase: Apple Light Glass Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {servicesData.map((svc, idx) => (
-              <motion.div
-                key={svc.id}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.5, delay: idx * 0.08 }}
-                whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className="apple-card rounded-[32px] p-7 sm:p-8 flex flex-col justify-between group hover:border-slate-300 transition-all duration-300 relative overflow-hidden"
-              >
-                {/* Dynamic Subtle Light Sheen */}
-                <div
-                  className="absolute top-0 right-0 w-36 h-36 rounded-full blur-2xl transition-all duration-300 pointer-events-none opacity-40"
-                  style={{ backgroundColor: currentPalette.glowColor }}
-                />
+            {servicesData.map((svc, idx) => {
+              const meta = getServiceCategoryMeta(svc);
+              const CategoryIcon = meta.Icon;
 
-                <div className="space-y-4 relative z-10 text-left">
-                  <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-sm">
-                      {serviceIcons[svc.iconName] || <Code2 className={`w-5 h-5 ${currentPalette.textAccentClass}`} />}
+              return (
+                <motion.div
+                  key={svc.id}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.5, delay: idx * 0.08 }}
+                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                  className="apple-card rounded-[32px] p-7 sm:p-8 flex flex-col justify-between group hover:border-slate-300 transition-all duration-300 relative overflow-hidden"
+                >
+                  {/* Dynamic Subtle Light Sheen */}
+                  <div
+                    className="absolute top-0 right-0 w-36 h-36 rounded-full blur-2xl transition-all duration-300 pointer-events-none opacity-40"
+                    style={{ backgroundColor: currentPalette.glowColor }}
+                  />
+
+                  <div className="space-y-4 relative z-10 text-left">
+                    {/* Top Row: Dynamic Category Tag with Icon & Performance SLA */}
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border shadow-xs ${meta.badgeStyle}`}>
+                        <CategoryIcon className="w-3.5 h-3.5" />
+                        <span>{meta.categoryLabel}</span>
+                      </div>
+                      <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                        {svc.highlightMetric}
+                      </span>
                     </div>
-                    <span className="text-[11px] font-mono font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
-                      {svc.highlightMetric}
+
+                    {/* Prominent Apple Glass Icon Showcase Box */}
+                    <div className="pt-2 flex items-center gap-4">
+                      <div
+                        className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 shadow-sm ${meta.iconContainerStyle} group-hover:scale-105 group-hover:shadow-md shrink-0`}
+                      >
+                        <CategoryIcon className="w-7 h-7 transition-transform duration-300 group-hover:scale-110" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight transition-colors">
+                          {svc.title}
+                        </h3>
+                        <p className={`text-xs ${currentPalette.textAccentClass} font-semibold mt-0.5`}>
+                          {svc.subtitle}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      {svc.description}
+                    </p>
+
+                    {/* Key Highlights with Contextual Lucide Icons */}
+                    <div className="space-y-2 pt-3 border-t border-slate-200/80">
+                      <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                        <meta.SubIcon className="w-3 h-3 text-slate-500" />
+                        <span>Core Capabilities:</span>
+                      </div>
+                      <ul className="space-y-2 text-xs text-slate-600 font-medium">
+                        {svc.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            {getFeatureIcon(feature)}
+                            <span className="leading-snug">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 mt-6 border-t border-slate-200/80 flex items-center justify-between relative z-10">
+                    <button
+                      onClick={() => onOpenConsultation(svc.title)}
+                      className={`text-xs font-bold ${currentPalette.textAccentClass} hover:opacity-80 flex items-center gap-1.5 group-hover:translate-x-0.5 transition-transform`}
+                    >
+                      <span>Inquire for {svc.title}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+
+                    <span className="text-xs text-slate-400 font-mono font-semibold">
+                      0{idx + 1}
                     </span>
                   </div>
-
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight transition-colors">
-                      {svc.title}
-                    </h3>
-                    <p className={`text-xs ${currentPalette.textAccentClass} font-semibold mt-0.5`}>
-                      {svc.subtitle}
-                    </p>
-                  </div>
-
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    {svc.description}
-                  </p>
-
-                  <div className="space-y-2 pt-3 border-t border-slate-200/80">
-                    <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                      Key Highlights:
-                    </div>
-                    <ul className="space-y-1.5 text-xs text-slate-600 font-medium">
-                      {svc.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className={`w-4 h-4 ${currentPalette.textAccentClass} shrink-0 mt-0.5`} />
-                          <span className="leading-snug">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-slate-200/80 flex items-center justify-between relative z-10">
-                  <button
-                    onClick={() => onOpenConsultation(svc.title)}
-                    className={`text-xs font-bold ${currentPalette.textAccentClass} hover:opacity-80 flex items-center gap-1.5 group-hover:translate-x-0.5 transition-transform`}
-                  >
-                    <span>Inquire for Project</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-
-                  <span className="text-xs text-slate-400 font-mono font-semibold">
-                    0{idx + 1}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
